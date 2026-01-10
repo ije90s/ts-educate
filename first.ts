@@ -116,3 +116,68 @@ rest("1", "2", "3");
 const tuple: [string, number] = ["1", 1];
 tuple[2] = "hello"; // 불가능
 tuple.push("hello"); // 가능
+
+const enum EDirection {
+  UP,
+  Down,
+  Left,
+  Right,
+}
+
+// as const를 사용하면, readonly key-value 형태로 읽힘 (Enum)
+// 사용하지 않는다면, number로 인식
+const ODirection = {
+  Up: 0,
+  Down: 1,
+  Left: 2,
+  Right: 3,
+} as const;
+const a3 = EDirection.UP;
+const c3 = EDirection.Left;
+
+// enum 타입으로 사용 가능
+function walk(dir: EDirection) {}
+
+// enum 대신 사용하려면 typeof, keyof 활용
+type Direction = (typeof ODirection)[keyof typeof ODirection];
+function run(dir: Direction) {}
+
+walk(EDirection.Left);
+run(ODirection.Right);
+
+// keyof
+// obj2는 js의 값이기 때문에 타입으로 사용 불가능 > 타입을 사용하려면 앞에 typeof 키워드 명시
+// as const를 안 적으면 Key2가 stirng으로 인식(엄격하게)
+const obj2 = { a: "123", b: "hello", c: "world" } as const;
+type Key = keyof typeof obj2; // 키만 가져옴
+type Value = (typeof obj2)[keyof typeof obj2]; // 밸류만 가져옴
+
+// 간단하게 타입 명기만 할 경우, type
+// 객체 지향으로 소스 짤 경우, interface
+// 두개 다 형태는 비슷
+type A = { a: string };
+const a4: A = { a: "hello" };
+
+interface B {
+  a: string;
+}
+const b4: B = { a: "hello" };
+
+// 초기에 변수를 지정할 때, 타입이 명확해야 한다.
+// 안그러면 타입스크립트에서 함수 혼용이 일어남
+function add2(x: string | number, y: string | number): string | number {
+  return x + y;
+}
+const result: string | number = add2(1, 2); // string으로 착각
+add2("1", "2");
+add2(1, "2");
+
+type A2 = {
+  a: string;
+};
+type B2 = {
+  b: string;
+};
+
+const aa: A2 | B2 = { a: "hello", b: "world" }; // union
+const bb: A2 & B2 = { a: "hello", b: "world" }; // intersection
