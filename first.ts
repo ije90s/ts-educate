@@ -181,3 +181,56 @@ type B2 = {
 
 const aa: A2 | B2 = { a: "hello", b: "world" }; // union
 const bb: A2 & B2 = { a: "hello", b: "world" }; // intersection
+
+// &를 사용하면 확장 가능
+type Animal = { breath: true };
+type Poyouryu = Animal & { breed: true };
+type Human = Poyouryu & { think: true };
+
+const human: Human = { breath: true, breed: true, think: true };
+
+interface A3 {
+  breath: true;
+}
+interface B3 extends A3 {
+  breed: true;
+}
+
+const b5: B3 = { breed: true, breath: true };
+
+// interface 합칠 수 있어, 확장 가능
+interface A4 {
+  talk: () => void;
+}
+interface A4 {
+  eat: () => void;
+}
+interface A4 {
+  shit: () => void;
+}
+const a: A4 = { talk() {}, eat() {}, shit() {} };
+
+// A > B (벤다이그)
+// 좁은 타입에서 넓은 타입 대입 가능
+// 넓은 타입에서 좁은 타입 대입 불가
+type A = string | number;
+type B = string;
+
+// any: 전체집합, never: 공집합
+type C = string & number;
+
+// 속성이 적을수록 넓은 타입
+// 객체는 구체적으로 좁은 타입
+// DE > D, E > F
+type D = { name: string };
+type E = { age: number };
+type DE = D | E;
+type F = D & E; // {name: string, age: number}
+
+const de: DE = { name: "dd" };
+// 넓은 타입을 좁은 타입에 넣을 수 없음
+const f: F = de;
+// 객체 리터럴 타입: 타입 넓으냐? 좁으냐? 검사 뿐만 아니라 잉여 속성 검사도
+const f2: F = { name: "dd", age: 5, married: false };
+const obj = { name: "dd", age: 5, married: false };
+const f3: F = obj;
