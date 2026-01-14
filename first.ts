@@ -210,7 +210,7 @@ interface A4 {
 }
 const a: A4 = { talk() {}, eat() {}, shit() {} };
 
-// A > B (벤다이그)
+// A > B (벤다이그램)
 // 좁은 타입에서 넓은 타입 대입 가능
 // 넓은 타입에서 좁은 타입 대입 불가
 type A = string | number;
@@ -224,8 +224,8 @@ type C = string & number;
 // DE > D, E > F
 type D = { name: string };
 type E = { age: number };
-type DE = D | E;
-type F = D & E; // {name: string, age: number}
+type DE = D | E; // 합집합
+type F = D & E; // {name: string, age: number} 교집합
 
 const de: DE = { name: "dd" };
 // 넓은 타입을 좁은 타입에 넣을 수 없음
@@ -234,3 +234,36 @@ const f: F = de;
 const f2: F = { name: "dd", age: 5, married: false };
 const obj = { name: "dd", age: 5, married: false };
 const f3: F = obj;
+
+// void는 매개변수, 리턴값, 메서드에 void 타입을 쓸수 있는데,
+// 리턴값만 return 할수 없음(undefined나 단순 리턴은 가능)
+// 그 외는 리턴 가능
+function a6(callback: () => void): void {
+  //return '3';
+  //return undefined;
+  return;
+}
+a6(() => {
+  return "3";
+});
+
+const b = a();
+
+interface Human2 {
+  talk: () => void;
+}
+const human2: Human2 = {
+  talk() {
+    return "abc";
+  },
+};
+
+// undefined !== number
+// void는 어떤 타입의 리턴값이든 상관 X(무시)
+declare function forEach(
+  arr: number[],
+  callback: (el: number) => undefined
+): void;
+
+let target: number[] = [];
+forEach([1, 2, 3], (el) => target.push(el));
