@@ -267,3 +267,91 @@ declare function forEach(
 
 let target: number[] = [];
 forEach([1, 2, 3], (el) => target.push(el));
+
+// 타입 가드: typeof, Array.isArray, istanceof, in, 커스텀 타입가드(리턴값: is 연산자 이용)
+function numOrStr(a: number | string) {
+  if (typeof a === 'string') { //타입 가드
+    a.split(',');  
+  }
+  
+  if(typeof a === 'number'){
+    a.toFixed(1);
+  }
+
+  // never > 이미 파라미터에서 boolean 타입은 받지 않으므로
+  // if(typeof a === 'boolean'){
+  //   a.toString();
+  // }
+}
+
+function numOrNumArr(a: number | number[]) {
+  if (Array.isArray(a)) {
+    a.slice(1);  
+  } else {
+    a.toFixed(1);
+  }
+}
+
+class A5 {
+  aaa(){}
+}
+
+class B3 {
+  bbb(){}
+}
+
+function aOrb(param: A5 | B3){
+  if(param instanceof A5){
+    param.aaa();
+  }else{
+    param.bbb();
+  }
+}
+aOrb(new A5()); // 인스턴스 전달
+aOrb(new B3());
+
+type B4 = { type: 'b', bbb: string };
+type C4 = { type: 'c', ccc: string };
+type D4 = { type: 'd', ddd: string };
+type A6 = B4 | C4 | D4;
+// 값/속성을 통해 클래스 구분 가능
+// 대부분 값을 이용하여 클래스 구분
+function typeCheck(a: A6) {
+  // if (a.type === 'b') {
+  //   a.bbb;
+  // } else if (a.type === 'c') {
+  //   a.ccc;
+  // } else {
+  //   a.ddd;
+  // }
+  if('bbb' in a){
+    a.type;
+  }else if('ccc' in a){
+    a.ccc;
+  }else{
+    a.ddd;
+  }
+}
+// 객체 생성 시에 타입 명시
+// 타입 명시가 없을 경우, 속성으로 구별
+const human = { type: 'human' };
+const dog = { type: 'dog' };
+const cat = { type: 'cat' }
+
+// 커스텀 타입 가드
+interface Cat { meow: number }
+interface Dog { bow: number }
+// 타입을 구분해주는 커스텀 함수를 직접 커스텀 가능
+// 리턴값에 is 연산자가 있는 경우, 커스텀 타입 가드
+function catOrDog(a: Cat | Dog): a is Dog {
+  // 타입 판별: 커스텀
+  if ((a as Cat).meow) { return false }
+  return true;
+}
+const cat: Cat | Dog = { meow: 3 }
+if (catOrDog(cat)) { // 타입가드(커스텀)
+    console.log(cat.meow);
+}
+if ('meow' in cat) {
+    console.log(cat.meow);
+}
