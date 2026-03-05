@@ -355,3 +355,68 @@ if (catOrDog(cat)) { // 타입가드(커스텀)
 if ('meow' in cat) {
     console.log(cat.meow);
 }
+
+interface A7 {
+  readonly a: string;
+  b: string;
+}
+const aaa2: A7 = { a: 'hello', b: 'world'};
+aaa2.a = '123'; // 속성 바꿀 수 없음
+
+// 인덱스드 시그니처: 어떤 키/값이든 상관없이 string
+type A8 = { [key: string]: string };
+const aaa3: A8 = { a: 'a', b: 'b' };
+
+// 맵드 타입스: 제한된 키/값 지정
+type B5 = 'Human' | 'Mammal' | 'Animal';
+type A9 = { [key in B5]: B5};
+const aaa4: A9 = { 'Human': 'Human', 'Animal': 'Animal', 'Mammal': 'Mammal' };
+
+class A10 {
+  a: string;
+  b: number;
+  constructor(a: string, b: number = 123){
+    this.a = a;
+    this.b = b;
+  }
+  method(){}
+}
+type AA = A10;
+const a7: A10 = new A10('123');
+const b6: typeof A10 = A10;
+
+interface A11 {
+  a: string;
+  b: string;
+  c: string;
+}
+class B implements A11 {
+  private a: string = '123';
+  protected b: string = 'hello';
+  c: string = 'world';
+
+  mehtod(){
+    console.log(this.a);
+    console.log(this.b);
+    console.log(this.c);
+  }
+}
+class C2 extends B {
+  mehtod(): void {
+    console.log(this.a);
+    console.log(this.b);
+    console.log(this.c);
+  }
+}
+new C2().a;
+new C2().b;
+new C2().c;
+
+abstract class X {
+  abstract work(user: User): boolean;
+}
+class Y extends X {
+  work(user: User): boolean {
+    return true;
+  }
+}
